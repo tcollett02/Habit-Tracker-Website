@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name = "viewport" content="width=device-width", initial-scale="1.0">
+        <title>Habit Tracker</title>
+
+        <style>
+            /*input styling here eventually*/
+            table {
+                border-collapse: collapse;
+                
+            }
+
+            th, td{
+                border: 2px solid black;
+                padding: 8px;
+                text-align: center;
+            }
+        </style>
+    </head>
+
+    
+    <body>
+
+        <header>
+            <h1>Habit Tracker</h1>
+            <p>Sample description</p>
+            
+        </header>
+
+        <section class="weekly-section">
+            <h2>Habit Progress</h2>
+            <table>
+                <tr>
+                    <th>Task</th>
+                    <th>Mon</th>
+                    <th>Tues</th>
+                    <th>Wed</th>
+                    <th>Thurs</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                    <th>Sun</th>
+                </tr>
+
+                <tbody id="habit-body">  
+                </tbody>
+            </table>
+
+            <div class="add-habit">
+                    <input 
+                    type="text" 
+                    id="habit-name" 
+                    placeholder="New Habit"
+                    onkeydown="if(event.key === 'Enter') addHabit()"
+                    >
+                    <button onclick="addHabit()">Add Habit</button>
+                </div>
+        </section>
+
+        <section class = "monthly-section">
+            <h2>Monthly Progress</h2>
+            
+        </section>
+
+        <script>
+            const habits = [];
+
+            function createHabitRow(habitName) {
+                const tableBody = document.getElementById("habit-body");
+                const newRow = document.createElement("tr");
+
+                const taskCell = document.createElement("td");
+                taskCell.textContent = habitName;
+                newRow.appendChild(taskCell);
+
+                for (let i = 0; i < 7; i++) {
+                    const dayCell = document.createElement("td");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+
+                    dayCell.appendChild(checkbox);
+                    newRow.appendChild(dayCell);
+                }
+
+                tableBody.appendChild(newRow);
+            }
+
+            function saveHabits() {
+                localStorage.setItem("habits", JSON.stringify(habits));
+            }
+
+            function addHabit() {
+                const input = document.getElementById("habit-name");
+                const habitName = input.value.trim();
+
+                if (habitName === "") {
+                    return;
+                }
+
+                habits.push(habitName);
+                saveHabits();
+                createHabitRow(habitName);
+
+                input.value = "";
+            }
+
+        function loadHabits() {
+            const savedHabits = JSON.parse(localStorage.getItem("habits")) || [];
+
+            savedHabits.forEach(function(habitName) {
+                habits.push(habitName);
+                createHabitRow(habitName);
+            });
+        }
+
+        loadHabits();
+    </script>
+    </body>
+</html>
